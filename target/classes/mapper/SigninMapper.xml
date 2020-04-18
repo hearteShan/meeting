@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shan.meet.mapper.SigninMapper">
+    <resultMap id="r" type="com.shan.meet.entity.Signin">
+        <id column="id" property="id"/>
+        <result column="datatime" property="datatime"></result>
+        <result column="userid" property="userid"></result>
+        <result column="departid" property="departid"></result>
+        <association property="user" javaType="com.shan.meet.entity.User">
+            <id column="uid" property="id"/>
+            <result column="username" property="username"/>
+        </association>
+        <association property="depart" javaType="com.shan.meet.entity.Depart">
+            <id column="did" property="id"/>
+            <result column="name" property="name"/>
+        </association>
+    </resultMap>
+    <insert id="insertO">
+insert into signin(userid,departid,datatime)
+values(#{signin.userid},#{signin.departid},#{signin.datatime}
+)
+    </insert>
+    <select id="GetList" resultMap="r">
+         select signin.*,user.id as uid,user.username,depart.id as did,depart.name
+        from signin,user,depart where signin.departid=user.departid=depart.id;
+    </select>
+    <select id="GetListud" resultType="java.time.LocalDateTime">
+        select datatime from signin where userid=#{id}
+    </select>
+    <select id="getByUserid" resultType="com.shan.meet.entity.Signin">
+        select * from signin where userid=#{userid} limit #{page},#{limit}
+    </select>
+</mapper>

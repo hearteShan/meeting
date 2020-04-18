@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shan.meet.mapper.MeetingMapper">
+    <!-- 动态sql插入方法二   start -->
+    <!-- 对应的插入字段的名字 -->
+    <sql id="key">
+        <trim suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                name,
+            </if>
+            <if test="theme!=null and theme!=''">
+                theme,
+            </if>
+            <if test="starttime!=null and starttime!=''">
+                starttime,
+            </if>
+            <if test="endtime!=null and endtime!=''">
+                endtime,
+            </if>
+            <if test="note!=null and note!=''">
+                note,
+            </if>
+            <if test="content!=null and content!=''">
+                content,
+            </if>
+            <if test="departid!=null and departid!=''">
+                departid,
+            </if>
+            <if test="address!=null and address!=''">
+                address,
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 对应的插入字段的值 -->
+    <sql id="values">
+        <trim suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                #{meeting.name},
+            </if>
+            <if test="theme!=null and theme!=''">
+                #{meeting.theme},
+            </if>
+            <if test="starttime!=null and starttime!=''">
+                #{meeting.starttime},
+            </if>
+            <if test="endtime!=null and endtime!=''">
+                #{meeting.endtime},
+            </if>
+            <if test="note!=null and note!=''">
+                #{meeting.note},
+            </if>
+            <if test="content!=null and content!=''">
+                #{meeting.content},
+            </if>
+            <if test="departid!=null and departid!=''">
+                #{meeting.departid},
+            </if>
+            <if test="address!=null and address!=''">
+                #{meeting.address},
+            </if>
+        </trim>
+    </sql>
+    <insert id="insertO" parameterType="com.shan.meet.entity.Meeting">
+        insert into meeting(<include refid="key"/>)
+        values(<include refid="values"/>)
+    </insert>
+    <resultMap id="MeetingResultMap" type="com.shan.meet.entity.Meeting">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="theme" property="theme"/>
+        <result column="starttime" property="starttime"/>
+        <result column="endtime" property="endtime"/>
+        <result column="note" property="note"/>
+        <result column="departid" property="departid"/>
+        <result column="adress" property="adress"/>
+        <result column="content" property="content"/>
+        <association property="depart" javaType="com.shan.meet.entity.Depart">
+            <id column="id" property="id"/>
+            <result column="bname" property="name"/>
+            <result column="number" property="number"/>
+        </association>
+    </resultMap>
+    <select id="GetList" resultMap="MeetingResultMap">
+        select meeting.*,depart.name as 'bname',depart.id,depart.number from meeting left join depart
+        on meeting.departid=depart.id
+    </select>
+    <update id="updateOne" parameterType="com.shan.meet.entity.Meeting">
+        UPDATE meeting
+        <trim prefix="set" suffixOverrides=",">
+
+            <if test="name!=null and name!=''">
+            name=#{meeting.name},
+            </if>
+            <if test="theme!=null and theme!=''">
+                theme=#{meeting.theme},
+            </if>
+            <if test="starttime!=null and starttime!=''">
+                starttime=#{meeting.starttime},
+            </if>
+            <if test="endtime!=null and endtime!=''">
+                endtime=#{meeting.endtime},
+            </if>
+            <if test="note!=null and note!=''">
+                note=#{meeting.note},
+            </if>
+            <if test="content!=null and content!=''">
+                content=#{meeting.content},
+            </if>
+            <if test="departid!=null and departid!=''">
+                departid=#{meeting.departid},
+            </if>
+            <if test="address!=null and address!=''">
+                address=#{meeting.address},
+            </if>
+        </trim>
+        WHERE id=#{meeting.id}
+    </update>
+    <select id="getByTime" resultMap="MeetingResultMap">
+        select * from meeting where departid =#{id} and starttime &lt; #{time}  order by starttime desc
+    </select>
+</mapper>

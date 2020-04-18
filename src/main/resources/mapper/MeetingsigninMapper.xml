@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shan.meet.mapper.MeetingsigninMapper">
+    <resultMap id="r" type="com.shan.meet.entity.Meetingsignin">
+        <id column="id" property="id"></id>
+        <result column="time" property="time"></result>
+        <result column="userid" property="userid"></result>
+        <result column="meetingid" property="meetingid"></result>
+        <association property="user" javaType="com.shan.meet.entity.User">
+            <id column="uid" property="id"/>
+            <result column="username" property="username"/>
+        </association>
+        <association property="meeting" javaType="com.shan.meet.entity.Meeting">
+            <id column="mid" property="id"/>
+            <result column="name" property="name"/>
+        </association>
+    </resultMap>
+    <select id="GetList" resultMap="r">
+        select meetingsignin.*,user.id as uid,user.username,meeting.id as mid,meeting.name
+        from meetingsignin,user,meeting where meetingsignin.userid=user.id and meetingsignin.meetingid=meeting.id;
+    </select>
+    <select id="getListById" resultType="com.shan.meet.entity.Meetingsignin">
+        select * from meetingsignin where departid=#{id};
+    </select>
+
+</mapper>
